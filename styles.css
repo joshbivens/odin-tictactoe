@@ -1,0 +1,19 @@
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  width: 308px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.space {
+  height: 100px;
+  width: 100px;
+  background: #777;
+  margin: 1px;
+}
