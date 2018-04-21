@@ -9,8 +9,8 @@ const gameBoard = (() => {
   return { gameboard }
 })();
 
-// What do we leave in init and what do we move to gameplay?
-// Maybe we have: init, gameplay, AND render?
+// What do we leave in game and what do we move to gameplay?
+// Maybe we have: game, gameplay, AND render?
 
 // Gameplay needs to house movement and winstate
 const gamePlay = (() => {
@@ -19,13 +19,13 @@ const gamePlay = (() => {
   // }
 
   const makeMove = (e) => {
-    init.switchSides = !init.switchSides;
-    if (init.switchSides) {
-      init.newGame.gameboard[e.target.dataset.id] = "O";
-      render(init.player1);
+    game.switchSides = !game.switchSides;
+    if (game.switchSides) {
+      game.newGame.gameboard[e.target.dataset.id] = "O";
+      render(game.player1);
     } else {
-      init.newGame.gameboard[e.target.dataset.id] = "X";
-      render(init.player2);
+      game.newGame.gameboard[e.target.dataset.id] = "X";
+      render(game.player2);
     }
     // checkWin();
   }
@@ -35,7 +35,7 @@ const gamePlay = (() => {
   }
 })();
 // Init needs to initialize the players and gameboard
-const init = (() => {
+const game = (() => {
   const player1 = Player("Josh");
   const player2 = Player("Chris");
   const info = document.querySelector(".info");
@@ -58,11 +58,11 @@ const init = (() => {
 // Render needs to render the everything after a move is made
 // return player from makeMove and use it in render?
 const render = (player) => {
-  init.grid.forEach((space, index) => space.innerHTML = init.newGame.gameboard[index]);
-  init.info.innerHTML = `${player.name}'s turn`;
+  game.grid.forEach((space, index) => space.innerHTML = game.newGame.gameboard[index]);
+  game.info.innerHTML = `${player.name}'s turn`;
 };
 
-init;
+game;
 render();
 
 // console.log(`${player1.name} (${player1.side}) vs ${player2.name} (${player2.side})!`);
