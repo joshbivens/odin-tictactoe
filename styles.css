@@ -7,10 +7,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .grid {
-  width: 308px;
+  width: 316px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -20,15 +21,34 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: #333;
   font-size: 1.8rem;
   height: 100px;
   width: 100px;
-  background: #777;
   margin: 1px;
+  border: 1px solid #333;
 }
 
 .info {
   width: 300px;
   height: 75px;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.players {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #333;
+  padding: 25px 45px;
+  position: absolute;
+  top: 30px;
+}
+
+.players input, .players label {
+  margin-top: 5px;
+}
+
+#btn-play {
+  margin-top: 15px;
 }

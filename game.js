@@ -1,4 +1,4 @@
-const Player = (name) => {
+const player = (name) => {
   return {
     name
   }
@@ -6,88 +6,106 @@ const Player = (name) => {
 
 const gameBoard = (() => {
   let gameboard = ["", "", "", "", "", "", "", "", "",];
-  return { gameboard }
+  return {
+    gameboard
+  }
 })();
 
-// What do we leave in game and what do we move to gameplay?
-// Maybe we have: game, gameplay, AND render?
-
-// Gameplay needs to house movement and winstate
 const gamePlay = (() => {
+  const checkWin = () => {
+    const winningCombos = [
+      // Horizontal
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
 
-  // const checkWin = () => {
+      // Diagonal
+      [0, 4, 8],
+      [2, 4, 6],
 
-  // }
+      // Vertical
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8]
+    ];
+
+    winningCombos.forEach(combo => {
+      const first =  game.newGame.gameboard[combo[0]];
+      const second =  game.newGame.gameboard[combo[1]];
+      const third =  game.newGame.gameboard[combo[2]];
+
+      if(first === "X" && second === "X" && third === "X" ||
+         first === "O" && second === "O" && third === "O") {
+        game.won = true;
+        console.log(game.won);
+      }
+    });
+
+  }
 
   const markSpace = (e, side) => {
     game.newGame.gameboard[e.target.dataset.id] = side;
   }
 
-  const initiateMove = (e) => {
-    game.switchSides = !game.switchSides;
-    if (game.switchSides) {
-      markSpace(e, "O");
-      render(game.player1);
-    } else {
-      markSpace(e, "X");
-      render(game.player2);
+  const move = (e) => {
+    if(!game.won) {
+      game.switchSides = !game.switchSides;
+      if (game.switchSides) {
+        markSpace(e, "O");
+        render();
+      } else {
+        markSpace(e, "X");
+        render();
+      }
+      checkWin();
     }
-    // checkWin();
   }
-
+ 
   return {
-    initiateMove
+    move
   }
 })();
-// Init needs to initialize the players and gameboard
+
 const game = (() => {
-  const player1 = "Josh"; // prompt("Enter the first player's name.");
-  const player2 = "Chris"; // prompt("Enter the second player's name.");
+
   const info = document.querySelector(".info");
-  const grid = document.querySelectorAll(".space");
+  const playersBox = document.querySelector(".players");
+  const player1Field = document.querySelector("#player1");
+  const player2Field = document.querySelector("#player2");
+  const playButton = document.querySelector("#btn-play");
+  const spaces = document.querySelectorAll(".space");
+
+  spaces.forEach(space => space.addEventListener("click", gamePlay.move)); 
+  
+  let player1;
+  let player2;
   let newGame = gameBoard;
   let switchSides = true;
-
-  grid.forEach(space => space.addEventListener("click", gamePlay.initiateMove));
+  let won;
+  
+  const setPlayerNames = () => {
+    player1 = player(player1Field.value);
+    player2 = player(player2Field.value);
+    playersBox.style.display = "none";
+  }
+  
+  playButton.addEventListener("click", setPlayerNames);
 
   return {
     switchSides,
     newGame,
     player1,
     player2,
-    grid,
+    spaces,
     info,
+    won
   }
 })();
 
-// Render needs to render the everything after a move is made
-// return player from makeMove and use it in render?
-const render = (player) => {
-  game.grid.forEach((space, index) => space.innerHTML = game.newGame.gameboard[index]);
-  if (!firstTurn) {
-    game.info.innerHTML =
-      `<div>
-        ${player.name}'s turn
-      </div>`;
-  }
+const render = () => {
+  game.spaces.forEach((space, index) => space.innerHTML = game.newGame.gameboard[index]);
 };
 
-let firstTurn = true;
-
-const firstTurnFunction = () => {
-  console.log(game.player1.name)
-  firstTurn = false;
-  game.info.innerHTML =
-    `<div>
-      <div>${game.player1.name} is X, ${game.player2.name} is O.</div>
-    </div>`;
-}
-
 game;
-console.log(game.player1)
-setTimeout(() => {
-  render();
-  firstTurnFunction();
-}, 500)
 
 // console.log(`${player1.name} (${player1.side}) vs ${player2.name} (${player2.side})!`);
