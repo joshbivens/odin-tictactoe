@@ -1,4 +1,4 @@
-const player = (name) => {
+const playerFactory = (name) => {
   return {
     name
   }
@@ -12,6 +12,10 @@ const gameBoard = (() => {
 })();
 
 const gamePlay = (() => {
+  let switchSides = true;
+  let won = false;
+  let started = false;
+
   const checkWin = () => {
     const winningCombos = [
       // Horizontal
@@ -34,10 +38,12 @@ const gamePlay = (() => {
       const second =  game.newGame.gameboard[combo[1]];
       const third =  game.newGame.gameboard[combo[2]];
 
-      if(first === "X" && second === "X" && third === "X" ||
-         first === "O" && second === "O" && third === "O") {
-        game.won = true;
-        console.log(game.won);
+      if(
+        first === "X" && second === "X" && third === "X" ||
+        first === "O" && second === "O" && third === "O"
+      ) {
+        won = true;
+        console.log(`Won?: ${won}`);
       }
     });
 
@@ -48,9 +54,11 @@ const gamePlay = (() => {
   }
 
   const move = (e) => {
-    if(!game.won) {
-      game.switchSides = !game.switchSides;
-      if (game.switchSides) {
+    console.log(`Gameplay started: ${gamePlay.started}, Started: ${started}`);
+    if(gamePlay.started && !won) {
+      console.log("Moved");
+      switchSides = !switchSides;
+      if (switchSides) {
         markSpace(e, "O");
         render();
       } else {
@@ -62,48 +70,52 @@ const gamePlay = (() => {
   }
  
   return {
-    move
+    move,
+    started
   }
 })();
 
 const game = (() => {
-
   const info = document.querySelector(".info");
   const playersBox = document.querySelector(".players");
   const player1Field = document.querySelector("#player1");
   const player2Field = document.querySelector("#player2");
   const playButton = document.querySelector("#btn-play");
   const spaces = document.querySelectorAll(".space");
-
-  spaces.forEach(space => space.addEventListener("click", gamePlay.move)); 
-  
+  const grid = document.querySelector(".grid");
   let player1;
   let player2;
   let newGame = gameBoard;
-  let switchSides = true;
-  let won;
-  
+
   const setPlayerNames = () => {
-    player1 = player(player1Field.value);
-    player2 = player(player2Field.value);
+    player1 = playerFactory(player1Field.value);
+    player2 = playerFactory(player2Field.value);
     playersBox.style.display = "none";
+    grid.style.display = "flex";
+    gamePlay.started = true;
+    console.log(`Gameplay started: ${gamePlay.started}`)
   }
-  
+
+  grid.style.display = "none";
   playButton.addEventListener("click", setPlayerNames);
 
-  return {
-    switchSides,
+  spaces.forEach((space) => {
+    return space.addEventListener("click",gamePlay.move);
+  });
+
+  return { // Start Here: Does newGame need to go to gameplay?
     newGame,
     player1,
     player2,
     spaces,
-    info,
-    won
+    info
   }
 })();
 
 const render = () => {
-  game.spaces.forEach((space, index) => space.innerHTML = game.newGame.gameboard[index]);
+  game.spaces.forEach((space, index) => {
+    return space.innerHTML = game.newGame.gameboard[index];
+  });
 };
 
 game;
